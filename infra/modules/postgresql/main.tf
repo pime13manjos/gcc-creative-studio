@@ -1,3 +1,6 @@
+resource "random_id" "db_name_suffix" {
+  byte_length = 4
+}
 # 1. Reserve a range of internal IP addresses for Google services
 resource "google_compute_global_address" "private_ip_address" {
   name          = "google-managed-services-range"
@@ -39,4 +42,17 @@ resource "google_sql_database_instance" "default" {
   }
   
   deletion_protection = false
+}
+
+resource "google_sql_database" "default" {
+  name     = var.db_name
+  instance = google_sql_database_instance.default.name
+  project  = var.project_id
+}
+
+resource "google_sql_user" "default" {
+  name     = var.db_user
+  instance = google_sql_database_instance.default.name
+  password = var.db_password
+  project  = var.project_id
 }
