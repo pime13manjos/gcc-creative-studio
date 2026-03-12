@@ -216,4 +216,6 @@ resource "google_vpc_access_connector" "connector" {
   name          = "run-sql-connector"
   ip_cidr_range = "10.8.0.0/28" # A small, unused range in your VPC
   network       = var.vpc_network_id
+  min_instances = 2
+  max_instances = 3
 }
