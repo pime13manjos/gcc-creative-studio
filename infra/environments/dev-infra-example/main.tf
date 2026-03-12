@@ -63,8 +63,8 @@ module "creative_studio_platform" {
   backend_secrets        = var.backend_secrets
   fe_build_substitutions = var.fe_build_substitutions
 
-  vpc_network_id   = var.vpc_network_id
-  vpc_connector_id = var.vpc_connector_id
+  vpc_network_id   = module.vpc.network_id
+  vpc_connector_id = module.vpc.connector_id
 
   depends_on = [ google_project_service.apis ]
 }

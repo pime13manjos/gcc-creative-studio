@@ -125,13 +125,3 @@ variable "apis_to_enable" {
     "run.googleapis.com"               # Required for Cloud Run
   ]
 }
-
-variable "vpc_network_id" {
-  type        = string
-  description = "The ID of the VPC network"
-}
-
-variable "vpc_connector_id" {
-  type        = string
-  description = "The ID of the VPC Access Connector"
-}
