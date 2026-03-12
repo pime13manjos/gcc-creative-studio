@@ -1,4 +1,5 @@
 gcp_project_id = "YOUR_GCP_PROJECT_ID"
+project_id = "YOUR_GCP_PROJECT_ID"
 gcp_region     = "us-central1"
 environment    = "development"
 
