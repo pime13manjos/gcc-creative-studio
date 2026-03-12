@@ -1,12 +1,5 @@
-variable "project_id" {
-  type        = string
-  description = "The GCP Project ID where the VPC will be created."
-}
-
-variable "region" {
-  type        = string
-  description = "The region for the subnet and VPC connector (e.g., us-central1)."
-}
+variable "gcp_project_id" { type = string }
+variable "gcp_region" { type = string }
 
 # Optional: You can add this if you want to customize the network name later
 variable "network_name" {

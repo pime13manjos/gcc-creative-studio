@@ -12,8 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-variable "project_id" {}
-variable "region" {}
+variable "gcp_project_id" { type = string }
+variable "gcp_region" { type = string }
 variable "db_name" { default = "creative_studio" }
 variable "db_user" { default = "studio_user" }
 variable "db_password" { sensitive = true }

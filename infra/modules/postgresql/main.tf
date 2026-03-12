@@ -21,8 +21,8 @@ resource "google_service_networking_connection" "private_vpc_connection" {
 resource "google_sql_database_instance" "default" {
   name             = "creative-studio-db-${random_id.db_name_suffix.hex}"
   database_version = "POSTGRES_15" # Note: GCP currently supports up to PG 15/16; 18 is not yet GA
-  region           = var.region
-  project          = var.project_id
+  region           = var.gcp_region
+  project          = var.gcp_project_id
 
   # Ensure the VPC connection is created BEFORE the database
   depends_on = [google_service_networking_connection.private_vpc_connection]
@@ -54,5 +54,5 @@ resource "google_sql_user" "default" {
   name     = var.db_user
   instance = google_sql_database_instance.default.name
   password = var.db_password
-  project  = var.project_id
+  project  = var.gcp_project_id
 }

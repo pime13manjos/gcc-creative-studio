@@ -96,7 +96,3 @@ variable "vpc_network_id" {
   type        = string
   description = "The ID of the VPC network"
 }
-variable "region" {
-  type        = string
-  description = "Region for the VPC Access Connector"
-}
