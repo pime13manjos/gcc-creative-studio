@@ -14,7 +14,7 @@ resource "google_compute_subnetwork" "subnet" {
 
 # 3. Reserve a Private IP range for Google Managed Services (Cloud SQL)
 resource "google_compute_global_address" "private_ip_address" {
-  name          = "google-managed-services-range2"
+  name          = "google-managed-services-range"
   purpose       = "VPC_PEERING"
   address_type  = "INTERNAL"
   prefix_length = 16
