@@ -29,9 +29,9 @@ resource "google_service_networking_connection" "private_vpc_connection" {
 }
 
 # 5. Serverless VPC Access Connector (For Cloud Run)
-# resource "google_vpc_access_connector" "connector" {
-#   name          = "run-sql-connector"
-#   region        = var.gcp_region
-#   network       = google_compute_network.main.id
-#   ip_cidr_range = "10.8.0.0/28" # Must be a unique /28 range
-# }
+resource "google_vpc_access_connector" "connector" {
+  name          = "run-sql-connector"
+  region        = var.gcp_region
+  network       = google_compute_network.main.id
+  ip_cidr_range = "10.8.0.0/28" # Must be a unique /28 range
+}
