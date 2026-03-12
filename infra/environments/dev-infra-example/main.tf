@@ -43,8 +43,8 @@ resource "google_project_service" "apis" {
 
 module "vpc" {
   source     = "../../modules/vpc"
-  project_id = var.project_id
-  region     = var.region
+  project_id = var.gcp_project_id
+  region     = var.gcp_region
 }
 
 # Call the platform module, passing in all the required variables.
