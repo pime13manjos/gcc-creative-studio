@@ -37,6 +37,12 @@ resource "google_cloud_run_v2_service" "this" {
   custom_audiences = var.custom_audiences
   deletion_protection = false
 
+  vpc_access {
+      connector = google_vpc_access_connector.cloud_run_connector.id
+      egress    = "ALL_TRAFFIC"
+    }
+
+
   template {
     service_account = google_service_account.run_sa.email
     volumes {
