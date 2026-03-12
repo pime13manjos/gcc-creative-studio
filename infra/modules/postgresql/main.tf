@@ -47,7 +47,7 @@ resource "google_sql_database_instance" "default" {
 resource "google_sql_database" "default" {
   name     = var.db_name
   instance = google_sql_database_instance.default.name
-  project  = var.project_id
+  project  = var.gcp_project_id
 }
 
 resource "google_sql_user" "default" {

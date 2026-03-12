@@ -200,6 +200,9 @@ resource "google_cloud_run_v2_service_iam_member" "fe_trigger_can_view_backend" 
 
 resource "google_cloud_run_v2_service" "default" {
   # ... other config ...
+  name     = "cloudrun-default-service"
+  location = "us-central1"
+
   template {
     vpc_access {
       connector = var.vpc_connector_id # You'll need to create this or pass it in
@@ -211,7 +214,6 @@ resource "google_cloud_run_v2_service" "default" {
 
 resource "google_vpc_access_connector" "connector" {
   name          = "run-sql-connector"
-  gcp_region        = var.gcp_region
   ip_cidr_range = "10.8.0.0/28" # A small, unused range in your VPC
   network       = var.vpc_network_id
 }
