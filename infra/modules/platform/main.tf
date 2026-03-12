@@ -91,6 +91,8 @@ module "postgresql" {
   source      = "../postgresql"
   project_id  = var.gcp_project_id
   region      = var.gcp_region
+  vpc_network_id   = var.vpc_network_id
+  vpc_connector_id = var.vpc_connector_id
   
   # Pass the ACTUAL value to create the user
   db_password = data.google_secret_manager_secret_version.db_password.secret_data
