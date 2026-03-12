@@ -71,6 +71,6 @@ module "creative_studio_platform" {
 
   vpc_network_id   = module.vpc.network_id
   vpc_connector_id = module.vpc.connector_id
-
+  
   depends_on = [ google_project_service.apis ]
 }
