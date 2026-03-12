@@ -17,3 +17,16 @@ variable "region" {}
 variable "db_name" { default = "creative_studio" }
 variable "db_user" { default = "studio_user" }
 variable "db_password" { sensitive = true }
+variable "vpc_connector_id" {
+  type        = string
+  description = "The ID of the VPC Access Connector"
+}
+
+variable "vpc_network_id" {
+  type        = string
+  description = "The ID of the VPC network"
+}
+
+variable "region" {
+  type        = string
+}

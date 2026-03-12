@@ -87,3 +87,16 @@ variable "backend_runtime_secrets" {
   description = "Secrets to mount in the backend container at runtime."
   default     = {}
 }
+variable "vpc_connector_id" {
+  type        = string
+  description = "The ID of the VPC Access Connector"
+}
+
+variable "vpc_network_id" {
+  type        = string
+  description = "The ID of the VPC network"
+}
+
+variable "region" {
+  type        = string
+}
