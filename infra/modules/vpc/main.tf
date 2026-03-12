@@ -7,7 +7,7 @@ resource "google_compute_network" "main" {
 # 2. Subnet for general resources
 resource "google_compute_subnetwork" "subnet" {
   name          = "creative-studio-subnet"
-  ip_cidr_range = "10.0.1.0/24"
+  ip_cidr_range = "10.1.1.0/24"
   region        = var.gcp_region
   network       = google_compute_network.main.id
   # Add this block to satisfy the Org Policy
