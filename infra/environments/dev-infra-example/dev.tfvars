@@ -71,4 +71,7 @@ apis_to_enable = [
   "firestore.googleapis.com",
   "texttospeech.googleapis.com",
   "workflows.googleapis.com",
+  "servicenetworking.googleapis.com",
+  "vpcaccess.googleapis.com",
+  "compute.googleapis.com"
 ]

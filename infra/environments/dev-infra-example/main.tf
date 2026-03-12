@@ -41,6 +41,12 @@ resource "google_project_service" "apis" {
   disable_on_destroy = false
 }
 
+module "vpc" {
+  source     = "./modules/vpc"
+  project_id = var.project_id
+  region     = var.region
+}
+
 # Call the platform module, passing in all the required variables.
 module "creative_studio_platform" {
   source = "../../modules/platform"
