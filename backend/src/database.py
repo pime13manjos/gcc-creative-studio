@@ -102,6 +102,7 @@ async def get_connection():
             database=config_service.DB_NAME,
             host=config_service.DB_HOST,
             port=config_service.DB_PORT,
+            ssl=None
         )
         return conn
 
@@ -113,7 +114,7 @@ async def get_connection():
         user=config_service.DB_USER,
         password=config_service.DB_PASS,
         db=config_service.DB_NAME,
-        ip_type=IPTypes.PUBLIC,  # Adjust if using Private IP
+        ip_type=IPTypes.PRIVATE,  # Adjust if using Private IP
     )
         
     return conn
