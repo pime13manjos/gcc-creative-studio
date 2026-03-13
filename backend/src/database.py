@@ -102,7 +102,7 @@ async def get_connection():
             database=config_service.DB_NAME,
             host=config_service.DB_HOST,
             port=config_service.DB_PORT,
-            ssl=None
+            ssl='disable'
         )
         return conn
 
