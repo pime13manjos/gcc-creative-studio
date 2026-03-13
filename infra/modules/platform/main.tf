@@ -134,6 +134,8 @@ module "backend_service" {
   
   # Pass the Secret ID reference (NOT the value) for Cloud Run
   db_secret_id              = "creative-studio-db-password"
+
+  vpc_connector_id = var.vpc_connector_id
 }
 
 resource "google_firebase_project" "default" {

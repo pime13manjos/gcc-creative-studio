@@ -40,10 +40,10 @@ resource "google_cloud_run_v2_service" "this" {
 
   template {
     vpc_access {
-      connector = google_vpc_access_connector.cloud_run_connector.id
+      connector = var.vpc_connector_id
       egress    = "ALL_TRAFFIC"
     }
-    
+
     service_account = google_service_account.run_sa.email
     volumes {
       name = "cloudsql"
