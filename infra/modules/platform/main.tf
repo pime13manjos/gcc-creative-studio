@@ -211,7 +211,7 @@ resource "google_cloud_run_v2_service" "default" {
       egress    = "ALL_TRAFFIC" 
     }
     containers {
-      image = "us-docker.pkg.dev/cloudrun/container/cstudio-be"
+      image = "us-docker.pkg.dev/cloudrun/container/hello:latest"
     }
   }
 }
