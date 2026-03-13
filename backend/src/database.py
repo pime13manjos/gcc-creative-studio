@@ -94,6 +94,7 @@ async def get_connection():
     """
     Helper function to get a connection object for the AsyncEngine.
     """
+    print(f"DEBUG: USE_CLOUD_SQL_AUTH_PROXY is {config_service.USE_CLOUD_SQL_AUTH_PROXY}")
     if config_service.USE_CLOUD_SQL_AUTH_PROXY:
         import asyncpg
         conn = await asyncpg.connect(
