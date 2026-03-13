@@ -210,7 +210,9 @@ resource "google_cloud_run_v2_service" "default" {
       connector = var.vpc_connector_id # You'll need to create this or pass it in
       egress    = "ALL_TRAFFIC" 
     }
-    # ... your existing containers block ...
+    containers {
+      image = "us-docker.pkg.dev/cloudrun/container/cstudio-be"
+    }
   }
 }
 
