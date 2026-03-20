@@ -217,7 +217,7 @@ resource "google_cloud_run_v2_service" "default" {
 }
 
 resource "google_vpc_access_connector" "connector" {
-  name          = "run-sql-connector"
+  name          = "run-sql-connector2"
   ip_cidr_range = "10.8.2.0/28" # A small, unused range in your VPC
   network       = var.vpc_network_id
   min_instances = 2
