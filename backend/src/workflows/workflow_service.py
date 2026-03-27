@@ -156,6 +156,12 @@ class WorkflowService:
                 for output_name in step.outputs
             }
 
+        if not gcp_steps:
+            raise ValueError(
+                "Workflow must contain at least one actionable step (non-user_input). "
+                "Please add a generate or edit step before saving."
+            )
+
         gcp_workflow = {"main": {"params": ["args"], "steps": gcp_steps}}
 
         yaml_output = yaml.dump(gcp_workflow, indent=2)
@@ -233,7 +239,6 @@ class WorkflowService:
             # 1. Generate the ID manually
             workflow_id = f"id-{uuid.uuid4()}"
 
-            # 2. Create the workflow in the database
             workflow_model = WorkflowModel(
                 id=workflow_id,
                 user_id=user.id,
@@ -241,12 +246,14 @@ class WorkflowService:
                 description=workflow_dto.description,
                 steps=workflow_dto.steps,
             )
-            created_workflow = await self.workflow_repository.create(workflow_model)
 
-            # 3. Generate GCP Workflow YAML (using the same ID)
-            yaml_output = self._generate_workflow_yaml(created_workflow)
+            # 2. Validate by generating GCP Workflow YAML before writing to DB
+            yaml_output = self._generate_workflow_yaml(workflow_model)
             logger.info("Generated YAML:")
             logger.info(yaml_output)
+
+            # 3. Create the workflow in the database
+            created_workflow = await self.workflow_repository.create(workflow_model)
 
             # 4. Create GCP Workflow
             try:

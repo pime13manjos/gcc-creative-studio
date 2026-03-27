@@ -391,6 +391,10 @@ export class WorkflowEditorComponent implements OnInit, OnDestroy {
     if (this.workflowForm.invalid) {
       return;
     }
+    if (this.stepsArray.length === 0) {
+      handleErrorSnackbar(this.snackBar, { message: 'Add at least one step before saving the workflow.' }, 'Save workflow');
+      return;
+    }
     if (this.workflowForm.pristine) return;
 
     this.isLoading = true;
