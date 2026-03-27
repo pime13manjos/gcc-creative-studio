@@ -157,10 +157,7 @@ class WorkflowService:
             }
 
         if not gcp_steps:
-            raise ValueError(
-                "Workflow must contain at least one actionable step (non-user_input). "
-                "Please add a generate or edit step before saving."
-            )
+            return None
 
         gcp_workflow = {"main": {"params": ["args"], "steps": gcp_steps}}
 
@@ -247,7 +244,7 @@ class WorkflowService:
                 steps=workflow_dto.steps,
             )
 
-            # 2. Validate by generating GCP Workflow YAML before writing to DB
+            # 2. Generate GCP Workflow YAML (None if no actionable steps yet)
             yaml_output = self._generate_workflow_yaml(workflow_model)
             logger.info("Generated YAML:")
             logger.info(yaml_output)
@@ -255,14 +252,15 @@ class WorkflowService:
             # 3. Create the workflow in the database
             created_workflow = await self.workflow_repository.create(workflow_model)
 
-            # 4. Create GCP Workflow
-            try:
-                self._create_gcp_workflow(yaml_output, workflow_id)
-            except Exception as e:
-                # Rollback DB creation if GCP creation fails
-                logger.error(f"Failed to create GCP workflow: {e}. Rolling back DB.")
-                await self.workflow_repository.delete(created_workflow.id)
-                raise e
+            # 4. Create GCP Workflow only if there are actionable steps
+            if yaml_output:
+                try:
+                    self._create_gcp_workflow(yaml_output, workflow_id)
+                except Exception as e:
+                    # Rollback DB creation if GCP creation fails
+                    logger.error(f"Failed to create GCP workflow: {e}. Rolling back DB.")
+                    await self.workflow_repository.delete(created_workflow.id)
+                    raise e
 
             return created_workflow
         except ValidationError as e:
@@ -306,10 +304,18 @@ class WorkflowService:
             logger.info("Generated YAML for update:")
             logger.info(yaml_output)
 
-            # The GCP workflow ID matches the DB ID (which is already in the format id-UUID)
-            self._update_gcp_workflow(yaml_output, workflow_id)
+            # Update DB first
+            result = await self.workflow_repository.update(workflow_id, updated_model)
 
-            return await self.workflow_repository.update(workflow_id, updated_model)
+            # Sync GCP only if there are actionable steps
+            if yaml_output:
+                try:
+                    self._update_gcp_workflow(yaml_output, workflow_id)
+                except NotFound:
+                    # GCP workflow doesn't exist yet (saved without steps initially)
+                    self._create_gcp_workflow(yaml_output, workflow_id)
+
+            return result
         except ValidationError as e:
             raise ValueError(str(e))
 
