@@ -74,7 +74,7 @@
               mat-raised-button
               class="btn-glass-primary"
               (click)="save()"
-              [disabled]="workflowForm.pristine || isLoading || stepsArray.length === 0"
+              [disabled]="workflowForm.pristine || isLoading"
             >Save</button>
         </div>
     </div>
