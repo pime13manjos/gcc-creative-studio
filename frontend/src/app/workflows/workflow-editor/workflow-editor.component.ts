@@ -397,7 +397,13 @@ export class WorkflowEditorComponent implements OnInit, OnDestroy {
     this.errorMessage = null;
 
     const formValue = this.workflowForm.getRawValue();
+    console.log('[SAVE] Raw form value:', formValue);
+    console.log('[SAVE] stepsArray length:', this.stepsArray.length);
+    console.log('[SAVE] userInput outputs:', formValue.userInput?.outputs);
+    console.log('[SAVE] userInput definitions:', formValue.userInput?.settings?.definitions);
+
     const steps = this.prepareSteps(formValue);
+    console.log('[SAVE] Prepared steps to send to backend:', JSON.stringify(steps, null, 2));
 
     let request$: Observable<any>;
 
@@ -407,6 +413,7 @@ export class WorkflowEditorComponent implements OnInit, OnDestroy {
         description: formValue.description || '',
         steps: steps,
       };
+      console.log('[SAVE] Sending UPDATE payload:', JSON.stringify(updateDto, null, 2));
       request$ = this.workflowService.updateWorkflow(formValue.id, updateDto);
     } else {
       const createDto: WorkflowCreateDto = {
@@ -414,12 +421,14 @@ export class WorkflowEditorComponent implements OnInit, OnDestroy {
         description: formValue.description || '',
         steps: steps,
       };
+      console.log('[SAVE] Sending CREATE payload:', JSON.stringify(createDto, null, 2));
       request$ = this.workflowService.createWorkflow(createDto);
     }
 
     request$.subscribe({
       next: (response) => {
         this.isLoading = false;
+        console.log('[SAVE] Success response:', response);
         this.workflowForm.markAsPristine();
 
         // If we were in Create mode, switch to Edit mode with the new ID
@@ -512,6 +521,8 @@ export class WorkflowEditorComponent implements OnInit, OnDestroy {
   }
 
   private prepareSteps(formValue: any): any[] {
+    console.log('[PREPARE] formValue.steps count:', formValue.steps?.length);
+    console.log('[PREPARE] formValue.userInput:', formValue.userInput);
     const steps = formValue.steps.map((step: any) => {
       const newStep = { ...step };
       if (newStep.inputs) {
@@ -541,6 +552,9 @@ export class WorkflowEditorComponent implements OnInit, OnDestroy {
       });
     }
 
+    console.log('[PREPARE] userInputOutputs (after toIdentifier):', userInputOutputs);
+    console.log('[PREPARE] processing steps (after input clean):', steps);
+
     const user_input_step = {
       ...formValue.userInput,
       outputs: userInputOutputs,
@@ -548,6 +562,8 @@ export class WorkflowEditorComponent implements OnInit, OnDestroy {
       type: NodeTypes.USER_INPUT,
       status: StepStatusEnum.IDLE,
     }
+    console.log('[PREPARE] Final user_input_step:', user_input_step);
+    console.log('[PREPARE] Final steps array length:', 1 + steps.length);
     return [user_input_step, ...steps];
   }
 

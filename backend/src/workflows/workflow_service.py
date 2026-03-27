@@ -80,9 +80,9 @@ class WorkflowService:
         This function contains the business logic for generating the workflow.
         """
         user_id = workflow.user_id
-        logger.info(
-            f"Received workflow generation request for user {user_id}"
-        )
+        logger.info(f"[YAML] Generating YAML for user {user_id}, total steps received: {len(workflow.steps)}")
+        logger.info(f"[YAML] Step types received: {[s.type.value for s in workflow.steps]}")
+
         # A very basic transformation to a GCP-like workflow structure
         step_outputs = {}
         gcp_steps = []
@@ -92,15 +92,15 @@ class WorkflowService:
 
         for step in workflow.steps:
             if step.type.value == NodeTypes.USER_INPUT:
-                print("USER INPUT FOUND")
-                # This is a user input step, so we should treat it as a workflow parameter
                 user_input_step_id = step.step_id
-                for output_name, output_value in step.outputs.items():
+                logger.info(f"[YAML] USER_INPUT step found (id={user_input_step_id}), outputs: {list(step.outputs.keys())}")
+                for output_name in step.outputs:
                     workflow_params.append(output_name)
                 continue
 
             step_type = step.type.value.lower()
             step_name = step.step_id
+            logger.info(f"[YAML] Processing actionable step: type={step_type}, id={step_name}")
             config = step.settings if step.settings else {}
             config = (
                 config.model_dump() if isinstance(config, BaseModel) else config
@@ -244,13 +244,16 @@ class WorkflowService:
                 steps=workflow_dto.steps,
             )
 
+            logger.info(f"[CREATE] Workflow id={workflow_id}, steps received: {len(workflow_dto.steps)}")
+            logger.info(f"[CREATE] Step types: {[s.type.value for s in workflow_dto.steps]}")
+
             # 2. Generate GCP Workflow YAML (None if no actionable steps yet)
             yaml_output = self._generate_workflow_yaml(workflow_model)
-            logger.info("Generated YAML:")
-            logger.info(yaml_output)
+            logger.info(f"[CREATE] YAML output is {'present' if yaml_output else 'None (no actionable steps, skipping GCP)'}")
 
             # 3. Create the workflow in the database
             created_workflow = await self.workflow_repository.create(workflow_model)
+            logger.info(f"[CREATE] DB record saved: id={created_workflow.id}")
 
             # 4. Create GCP Workflow only if there are actionable steps
             if yaml_output:
@@ -300,19 +303,24 @@ class WorkflowService:
                 steps=workflow_dto.steps,
             )
 
+            logger.info(f"[UPDATE] Workflow id={workflow_id}, steps received: {len(workflow_dto.steps)}")
+            logger.info(f"[UPDATE] Step types: {[s.type.value for s in workflow_dto.steps]}")
+
             yaml_output = self._generate_workflow_yaml(updated_model)
-            logger.info("Generated YAML for update:")
-            logger.info(yaml_output)
+            logger.info(f"[UPDATE] YAML output is {'present' if yaml_output else 'None (no actionable steps, skipping GCP)'}")
 
             # Update DB first
             result = await self.workflow_repository.update(workflow_id, updated_model)
+            logger.info(f"[UPDATE] DB record updated: id={workflow_id}")
 
             # Sync GCP only if there are actionable steps
             if yaml_output:
                 try:
                     self._update_gcp_workflow(yaml_output, workflow_id)
+                    logger.info(f"[UPDATE] GCP workflow updated: id={workflow_id}")
                 except NotFound:
                     # GCP workflow doesn't exist yet (saved without steps initially)
+                    logger.info(f"[UPDATE] GCP workflow not found, creating: id={workflow_id}")
                     self._create_gcp_workflow(yaml_output, workflow_id)
 
             return result
